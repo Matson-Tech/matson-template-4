@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -101,5 +102,29 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Scroll snapping styles */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Mobile scroll snap optimization */
+  @media (max-width: 768px) {
+    .snap-y {
+      scroll-snap-type: y mandatory;
+    }
+    
+    .snap-start {
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+  }
+
+  /* Ensure mobile viewport height */
+  @supports (-webkit-touch-callout: none) {
+    .min-h-screen {
+      min-height: -webkit-fill-available;
+    }
   }
 }

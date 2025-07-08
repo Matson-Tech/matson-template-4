@@ -27,17 +27,35 @@ const IndexContent = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white snap-y snap-mandatory overflow-y-scroll">
       <Header />
-      <HeroSection />
-      <StorySection />
-      <DetailsSection />
-      <ScheduleSection />
-      <GallerySection />
-      <WishesSection />
-      <MoreInfoSection />
-      <ContactSection />
-      <JewellerSection />
+      <div className="snap-start">
+        <HeroSection />
+      </div>
+      <div className="snap-start">
+        <StorySection />
+      </div>
+      <div className="snap-start">
+        <DetailsSection />
+      </div>
+      <div className="snap-start">
+        <ScheduleSection />
+      </div>
+      <div className="snap-start">
+        <GallerySection />
+      </div>
+      <div className="snap-start">
+        <WishesSection />
+      </div>
+      <div className="snap-start">
+        <MoreInfoSection />
+      </div>
+      <div className="snap-start">
+        <ContactSection />
+      </div>
+      <div className="snap-start">
+        <JewellerSection />
+      </div>
     </div>
   );
 };
