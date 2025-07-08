@@ -4,7 +4,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { flushSync } from "react-dom";
 import { supabase } from "@/integrations/supabase/client";
-import type { Json } from "@/integrations/supabase/types";
+import type { Json } from "@/integrations/supabase/custom-types";
 import type { User, WeddingData, WeddingWishType } from "@/types/wedding";
 import uploadImage from "@/utils/UploadImage";
 import { WeddingContext } from "./WeddingContext";
