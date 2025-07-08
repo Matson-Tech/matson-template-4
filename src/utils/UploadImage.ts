@@ -1,28 +1,45 @@
-
+import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@/types/wedding";
 
-const uploadImage = async (file: File, user: User | null, fileName: string): Promise<string> => {
-  if (!user) {
-    throw new Error("User must be logged in to upload images");
-  }
+const uploadImage = async (
+    file: File,
+    user: User,
+    name: string,
+): Promise<string | null> => {
+    const imagePath = `user_uploads/${user.id}/${name}`;
+    const { error } = await supabase.storage
+        .from("images")
+        .upload(imagePath, file, {
+            upsert: true,
+        });
 
-  const fileExt = file.name.split('.').pop();
-  const filePath = `${user.id}/${fileName}.${fileExt}`;
+    if (error) {
+        console.log("Error Uploading image: ", error.message);
+        toast({
+            title: "Failed to upload image",
+            description: error.message,
+            variant: "destructive",
+        });
+        return null;
+    }
 
-  const { error: uploadError } = await supabase.storage
-    .from('wedding-images')
-    .upload(filePath, file, { upsert: true });
+    toast({
+        title: "Image uploaded Successfully!",
+        description: "Please wait few seconds to see the effect.",
+    });
 
-  if (uploadError) {
-    throw uploadError;
-  }
+    const { data } = supabase.storage.from("images").getPublicUrl(imagePath);
 
-  const { data } = supabase.storage
-    .from('wedding-images')
-    .getPublicUrl(filePath);
+    if (!data.publicUrl) {
+        toast({
+            title: "Failed to retrieve load Image!",
+            variant: "destructive",
+        });
+        return null;
+    }
 
-  return data.publicUrl;
+    return `${data.publicUrl}?t=${Date.now()}`;
 };
 
 export default uploadImage;

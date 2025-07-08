@@ -1,87 +1,89 @@
-
 export interface User {
-  id: string;
-  email: string;
-  isAuthenticated: boolean;
+    id: string;
+    email: string;
+    isAuthenticated: boolean;
 }
 
-export interface WeddingWishType {
-  id?: string;
-  name: string;
-  message: string;
-}
-
-export interface ScheduleItem {
-  id: string;
-  time: string;
-  event: string;
-  description: string;
-}
-
-export interface GalleryItem {
-  id: string;
-  url: string;
-  caption: string | null;
-}
-
-export interface WeddingData {
-  couple: {
+export interface WeddingCouple {
     groomName: string;
     brideName: string;
     weddingQuote: string;
     image: string;
-  };
-  story: {
+}
+
+export interface WeddingStory {
     title: string;
     content: string;
     image: string;
-  };
-  weddingDetails: {
-    event1: {
-      title: string;
-      date: string;
-      time: string;
-      venue: string;
-      address: string;
-      addressMapLink: string;
-    };
-    event2: {
-      title: string;
-      date: string;
-      time: string;
-      venue: string;
-      address: string;
-      addressMapLink: string;
-    };
-    toKnow1: {
-      title: string;
-      description: string;
-    };
-    toKnow2: {
-      title: string;
-      description: string;
-    };
-    toKnow3: {
-      title: string;
-      description: string;
-    };
-  };
-  schedule: ScheduleItem[];
-  gallery: GalleryItem[];
-  moreInfo: {
+}
+
+export interface WeddingEvent {
+    title: string;
+    date: string;
+    time: string;
+    venue: string;
+    address: string;
+    addressMapLink: string;
+}
+
+export interface WeddingToKnow {
+    title: string;
+    description: string;
+}
+
+export interface WeddingDetails {
+    event1: WeddingEvent;
+    event2: WeddingEvent;
+    toKnow1: WeddingToKnow;
+    toKnow2: WeddingToKnow;
+    toKnow3: WeddingToKnow;
+}
+
+export interface ScheduleItem {
+    id: string;
+    time: string;
+    event: string;
+    description: string;
+}
+
+export interface GalleryImage {
+    id: string;
+    url: string;
+    caption: string | null;
+}
+
+export interface WeddingMoreInfo {
     title: string;
     content: string;
-  };
-  contact: {
+}
+
+export interface WeddingContact {
     phone: string;
     email: string;
     address: string;
     addressMapLink: string;
-  };
-  jeweller: {
+}
+
+export interface WeddingJeweller {
     title: string;
     description: string;
     shopName: string;
     website: string;
-  };
+}
+
+export interface WeddingData {
+    couple: WeddingCouple;
+    story: WeddingStory;
+    weddingDetails: WeddingDetails;
+    schedule: ScheduleItem[];
+    gallery: GalleryImage[];
+    moreInfo: WeddingMoreInfo;
+    contact: WeddingContact;
+    jeweller: WeddingJeweller;
+}
+
+export interface WeddingWish {
+    id: string;
+    name: string;
+    message: string;
 }

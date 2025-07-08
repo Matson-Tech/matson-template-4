@@ -1,4 +1,3 @@
-
 import type { AuthError, Session } from "@supabase/supabase-js";
 import {
     createContext,
@@ -6,12 +5,12 @@ import {
     type SetStateAction,
     useContext,
 } from "react";
-import type { User, WeddingData, WeddingWishType } from "@/types/wedding";
+import type { User, WeddingData, WeddingWish } from "@/types/wedding";
 
 export interface WeddingContextType {
     weddingData: WeddingData;
-    weddingWishes: Array<WeddingWishType>;
-    setWeddingWishes: Dispatch<SetStateAction<Array<WeddingWishType>>>;
+    weddingWishes: Array<WeddingWish>;
+    setWeddingWishes: Dispatch<SetStateAction<Array<WeddingWish>>>;
     user: User | null;
     session: Session | null;
     isLoggedIn: boolean;
@@ -24,7 +23,7 @@ export interface WeddingContextType {
     ) => Promise<void>;
     loadAllWeddingWishes: () => Promise<void>;
     saveData: (data: WeddingData) => Promise<boolean>;
-    addWish: (data: WeddingWishType) => Promise<void>;
+    addWish: (data: WeddingWish) => Promise<void>;
     login: (
         email: string,
         password: string,

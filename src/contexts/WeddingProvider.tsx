@@ -1,11 +1,10 @@
-
 import type { Session } from "@supabase/supabase-js";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { flushSync } from "react-dom";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/custom-types";
-import type { User, WeddingData, WeddingWishType } from "@/types/wedding";
+import type { User, WeddingData, WeddingWish } from "@/types/wedding";
 import uploadImage from "@/utils/UploadImage";
 import { WeddingContext } from "./WeddingContext";
 
@@ -13,12 +12,14 @@ const defaultWeddingData: WeddingData = {
     couple: {
         groomName: "Alec Richelieu",
         brideName: "Zola Bekker",
-        weddingQuote: "Together We Journey – Two souls, one path, endless love.",
+        weddingQuote:
+            "Together We Journey – Two souls, one path, endless love.",
         image: "/couple/white.png",
     },
     story: {
         title: "The A to Z's of Alec & Zola",
-        content: "We met on a beautiful autumn day in the local coffee shop. What started as a chance encounter over spilled coffee became the beginning of our forever love story. After three wonderful years together, Alec proposed during a romantic sunset at our favorite beach, and Zola said yes with tears of joy.",
+        content:
+            "We met on a beautiful autumn day in the local coffee shop. What started as a chance encounter over spilled coffee became the beginning of our forever love story. After three wonderful years together, Alec proposed during a romantic sunset at our favorite beach, and Zola said yes with tears of joy.",
         image: "/couple/white.png",
     },
     weddingDetails: {
@@ -40,15 +41,18 @@ const defaultWeddingData: WeddingData = {
         },
         toKnow1: {
             title: "Dress Code",
-            description: "Semi-formal attire requested. Ladies: cocktail dresses or elegant separates. Gentlemen: suit and tie or dress shirt with slacks.",
+            description:
+                "Semi-formal attire requested. Ladies: cocktail dresses or elegant separates. Gentlemen: suit and tie or dress shirt with slacks.",
         },
         toKnow2: {
             title: "Gift Registry",
-            description: "Your presence is our present! If you wish to give a gift, we have a registry at Target and Amazon.",
+            description:
+                "Your presence is our present! If you wish to give a gift, we have a registry at Target and Amazon.",
         },
         toKnow3: {
             title: "Song Requests",
-            description: "Help us create the perfect playlist! Send us your song requests and we'll make sure to play your favorites.",
+            description:
+                "Help us create the perfect playlist! Send us your song requests and we'll make sure to play your favorites.",
         },
     },
     schedule: [
@@ -96,7 +100,8 @@ const defaultWeddingData: WeddingData = {
     ],
     moreInfo: {
         title: "Additional Information",
-        content: "For dietary restrictions, please contact us at least one week before the wedding. We will have vegetarian and gluten-free options available. Children are welcome at both the ceremony and reception.",
+        content:
+            "For dietary restrictions, please contact us at least one week before the wedding. We will have vegetarian and gluten-free options available. Children are welcome at both the ceremony and reception.",
     },
     contact: {
         phone: "+1 (555) 123-4567",
@@ -106,7 +111,8 @@ const defaultWeddingData: WeddingData = {
     },
     jeweller: {
         title: "Our Wedding Jeweller",
-        description: "Discover exquisite wedding rings and jewellery collections from our trusted partner.",
+        description:
+            "Discover exquisite wedding rings and jewellery collections from our trusted partner.",
         shopName: "Diamond Dreams Jewellers",
         website: "https://www.diamonddreamsjewellers.com",
     },
@@ -115,8 +121,9 @@ const defaultWeddingData: WeddingData = {
 export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
-    const [weddingData, setWeddingData] = useState<WeddingData>(defaultWeddingData);
-    const [weddingWishes, setWeddingWishes] = useState<Array<WeddingWishType>>([]);
+    const [weddingData, setWeddingData] =
+        useState<WeddingData>(defaultWeddingData);
+    const [weddingWishes, setWeddingWishes] = useState<Array<WeddingWish>>([]);
     const [user, setUser] = useState<User | null>(null);
     const [session, setSession] = useState<Session | null>(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -125,11 +132,12 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({
     useEffect(() => {
         const loadWeddingData = async (id: string) => {
             try {
-                const { data: weddingData, error: weddingError } = await supabase
-                    .from("wedding_data")
-                    .select("data")
-                    .eq("id", id)
-                    .maybeSingle();
+                const { data: weddingData, error: weddingError } =
+                    await supabase
+                        .from("wedding_data")
+                        .select("data")
+                        .eq("id", id)
+                        .maybeSingle();
 
                 const { data: wishData, error: wishError } = await supabase
                     .from("guest_wishes")
@@ -160,9 +168,11 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({
             }
         };
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+        const {
+            data: { subscription },
+        } = supabase.auth.onAuthStateChange((_, session) => {
             flushSync(() => setSession(session));
-            loadWeddingData(import.meta.env.VITE_WEBSITE_KEY || 'default');
+            loadWeddingData(import.meta.env.VITE_WEBSITE_KEY || "default");
 
             if (session?.user) {
                 const mappedUser: User = {
@@ -188,10 +198,11 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({
                 };
                 setUser(mappedUser);
                 setIsLoggedIn(true);
-                loadWeddingData(import.meta.env.VITE_WEBSITE_KEY || 'default');
-            } else {
-                setGloabalIsLoading(false);
+                loadWeddingData(import.meta.env.VITE_WEBSITE_KEY || "default");
             }
+            // else {
+            //     setGloabalIsLoading(false);
+            // }
         });
 
         return () => subscription.unsubscribe();
@@ -202,11 +213,14 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({
             const { data: wishData, error: wishError } = await supabase
                 .from("guest_wishes")
                 .select("id, name, message")
-                .eq("variant", import.meta.env.VITE_WEBSITE_KEY || 'default')
+                .eq("variant", import.meta.env.VITE_WEBSITE_KEY || "default")
                 .order("created_at", { ascending: false });
 
             if (wishError) {
-                console.log("Error loading all wishes (Supabase error): ", wishError);
+                console.log(
+                    "Error loading all wishes (Supabase error): ",
+                    wishError,
+                );
                 return;
             }
 
@@ -218,7 +232,9 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     };
 
-    const updateWeddingData = async (data: Partial<WeddingData>): Promise<boolean> => {
+    const updateWeddingData = async (
+        data: Partial<WeddingData>,
+    ): Promise<boolean> => {
         const prev = structuredClone(weddingData);
         const updated = { ...weddingData, ...data };
 
@@ -247,7 +263,11 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({
         }
 
         if (file) {
-            const imageUrl = await uploadImage(file, user, `gallery_image_${index}`);
+            const imageUrl = await uploadImage(
+                file,
+                user,
+                `gallery_image_${index}`,
+            );
             updatedGallery[index].url = imageUrl;
         }
 
@@ -282,12 +302,12 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({
         return true;
     };
 
-    const addWish = async (wish: WeddingWishType) => {
+    const addWish = async (wish: WeddingWish) => {
         try {
             const { error } = await supabase.from("guest_wishes").insert({
                 name: wish.name,
                 message: wish.message,
-                variant: import.meta.env.VITE_WEBSITE_KEY || 'default',
+                variant: import.meta.env.VITE_WEBSITE_KEY || "default",
             });
 
             if (error) {
