@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { useWedding } from "@/contexts/WeddingContext";
 import messageOnUpdate from "@/utils/messageOnUpdate";
+import FadeIn from "./animations/FadeIn";
 import { EditableText } from "./EditableText";
 import { WeddingSection } from "./WeddingSection";
-import FadeIn from "./animations/FadeIn";
 
 export const HeroSection = () => {
     const { weddingData, updateWeddingData } = useWedding();

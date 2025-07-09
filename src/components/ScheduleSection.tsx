@@ -1,4 +1,4 @@
-import { Label } from "@radix-ui/react-select";
+import { Label } from "@radix-ui/react-label";
 import { Clock, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -14,12 +14,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useWedding } from "@/contexts/WeddingContext";
 import type { ScheduleItem } from "@/types/wedding";
-import messageOnUpdate from "@/utils/messageOnUpdate";
+import messageOnUpdate, { useCase } from "@/utils/messageOnUpdate";
+import FadeIn from "./animations/FadeIn";
 import { EditableText } from "./EditableText";
 import { WeddingSection } from "./WeddingSection";
-import FadeIn from "./animations/FadeIn";
 
-export const ScheduleSection = () => {
+export const ScheduleSection: React.FC = () => {
     const { weddingData, updateWeddingData, isLoggedIn } = useWedding();
     const [isAddingNew, setIsAddingNew] = useState(false);
     const [newItem, setNewItem] = useState<Partial<ScheduleItem>>({
@@ -63,7 +63,10 @@ export const ScheduleSection = () => {
         const updatedSchedule = weddingData.schedule.filter(
             (item) => item.id !== id,
         );
-        await updateWeddingData({ schedule: updatedSchedule });
+        const isDeleted: boolean = await updateWeddingData({
+            schedule: updatedSchedule,
+        });
+        messageOnUpdate(isDeleted, "schedule", useCase.Delete);
     };
 
     return (
@@ -83,14 +86,8 @@ export const ScheduleSection = () => {
 
                 <div className="max-w-4xl mx-auto space-y-6">
                     {weddingData.schedule.map((item, index) => (
-                        <FadeIn
-                            key={`fade-${item.id}`}
-                            delay={(index + 1) * 100}
-                        >
-                            <Card
-                                key={item.id}
-                                className="bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-shadow"
-                            >
+                        <FadeIn key={item.id} delay={(index + 1) * 100}>
+                            <Card className="bg-white/80 backdrop-blur-sm shadow-lg hover:shadow-xl transition-shadow">
                                 <CardContent className="p-6">
                                     <div className="flex items-start justify-between">
                                         <div className="flex items-start space-x-4 flex-1">
@@ -181,10 +178,10 @@ export const ScheduleSection = () => {
                                 <Input
                                     value={newItem.time || ""}
                                     onChange={(e) =>
-                                        setNewItem({
-                                            ...newItem,
+                                        setNewItem((prev) => ({
+                                            ...prev,
                                             time: e.target.value,
-                                        })
+                                        }))
                                     }
                                     placeholder="e.g., 5:00 PM"
                                 />
@@ -196,10 +193,10 @@ export const ScheduleSection = () => {
                                 <Input
                                     value={newItem.event || ""}
                                     onChange={(e) =>
-                                        setNewItem({
-                                            ...newItem,
+                                        setNewItem((prev) => ({
+                                            ...prev,
                                             event: e.target.value,
-                                        })
+                                        }))
                                     }
                                     placeholder="e.g., Ceremony"
                                 />
@@ -211,10 +208,10 @@ export const ScheduleSection = () => {
                                 <Textarea
                                     value={newItem.description || ""}
                                     onChange={(e) =>
-                                        setNewItem({
-                                            ...newItem,
+                                        setNewItem((prev) => ({
+                                            ...prev,
                                             description: e.target.value,
-                                        })
+                                        }))
                                     }
                                     placeholder="e.g., Wedding ceremony begins"
                                     rows={3}

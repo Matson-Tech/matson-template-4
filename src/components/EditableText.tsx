@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { type KeyboardEvent, useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useWedding } from "@/contexts/WeddingContext";
+import { BluetoothIcon } from "lucide-react";
 
 interface EditableTextProps {
     value: string;
@@ -30,8 +31,9 @@ export const EditableText = ({
     const [isOpen, setIsOpen] = useState(false);
     const [editValue, setEditValue] = useState(value);
     const [isSaving, setIsSaving] = useState(false);
+    const [textAreaFocused, setTextAreaFocused] = useState<boolean>(false);
 
-    const handleSave = async () => {
+    const handleSave = useCallback(async () => {
         setIsSaving(true);
         try {
             await onSave(editValue);
@@ -41,6 +43,32 @@ export const EditableText = ({
         } finally {
             setIsSaving(false);
         }
+    }, [onSave, editValue]);
+
+    useEffect(() => {
+        const handleEnterKeyDown = (e: globalThis.KeyboardEvent) => {
+            if (e.key === "Enter" && isOpen && !textAreaFocused) {
+                handleSave();
+            }
+        };
+
+        window.addEventListener("keydown", handleEnterKeyDown);
+        return () => window.removeEventListener("keydown", handleEnterKeyDown);
+    }, [isOpen, handleSave, textAreaFocused]);
+
+    const openDialog = () => {
+        if (!isLoggedIn) {
+            return;
+        }
+        setEditValue(value);
+        setIsOpen(true);
+    };
+
+    const handleKeyDown = (e: KeyboardEvent<HTMLElement>) => {
+        if (e.key === "Enter" && isLoggedIn) {
+            e.stopPropagation();
+            openDialog();
+        }
     };
 
     const handleCancel = () => {
@@ -49,15 +77,17 @@ export const EditableText = ({
     };
 
     const editableClassName = isLoggedIn
-        ? "bg-red-100 hover:bg-red-200 cursor-pointer transition-colors border border-1 border-red-600"
+        ? "bg-red-100 hover:bg-red-200 cursor-pointer transition-colors border border-1 border-red-600 block"
         : "";
 
     return (
         <>
             <div
-                className={`${className} ${editableClassName}`}
-                onClick={() => isLoggedIn && setIsOpen(true)}
-                onKeyDown={() => isLoggedIn && setIsOpen(true)}
+                className={`appearance-none ${className} ${editableClassName}`}
+                onClick={openDialog}
+                onKeyDown={handleKeyDown}
+                role="button"
+                tabIndex={0}
             >
                 {children || value}
             </div>
@@ -73,6 +103,8 @@ export const EditableText = ({
                                 value={editValue}
                                 onChange={(e) => setEditValue(e.target.value)}
                                 rows={5}
+                                onFocus={() => setTextAreaFocused(true)}
+                                onBlur={() => setTextAreaFocused(false)}
                             />
                         ) : (
                             <Input

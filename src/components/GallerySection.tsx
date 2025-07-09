@@ -9,7 +9,7 @@ import FadeIn from "./animations/FadeIn";
 export const GallerySection = () => {
     const { weddingData, updateGalleryImage } = useWedding();
 
-    const displayImages = weddingData.gallery.slice(0, 6);
+    const displayImages = weddingData.gallery.slice(0, 3);
 
     return (
         <WeddingSection id="gallery" className="bg-[#e4c9f1]">
@@ -27,7 +27,7 @@ export const GallerySection = () => {
                 </FadeIn>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {displayImages.slice(0, 3).map((image, index) => (
+                    {displayImages.map((image, index) => (
                         <FadeIn
                             key={`fade-${image.id}`}
                             delay={(index + 1) * 100}

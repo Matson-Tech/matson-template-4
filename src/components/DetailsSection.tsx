@@ -4,9 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useWedding } from "@/contexts/WeddingContext";
 import type { WeddingEvent, WeddingToKnow } from "@/types/wedding";
 import messageOnUpdate from "@/utils/messageOnUpdate";
+import FadeIn from "./animations/FadeIn";
 import { EditableText } from "./EditableText";
 import { WeddingSection } from "./WeddingSection";
-import FadeIn from "./animations/FadeIn";
+import EditableLink from "./Editable/EditableLink";
+import Address from "./Address";
 
 export const DetailsSection = () => {
     const { weddingData, updateWeddingData } = useWedding();
@@ -139,17 +141,10 @@ export const DetailsSection = () => {
                                         className="font-medium text-gray-800"
                                     />
                                 </div>
-                                <EditableText
-                                    value={
-                                        weddingData.weddingDetails.event1
-                                            .address
-                                    }
-                                    onSave={(value) =>
-                                        updateEventDetails(
-                                            "event1",
-                                            "address",
-                                            value,
-                                        )
+                                <Address
+                                    event="event2"
+                                    eventDetails={
+                                        weddingData.weddingDetails.event2
                                     }
                                     className="text-gray-600 text-sm"
                                 />
@@ -219,17 +214,10 @@ export const DetailsSection = () => {
                                         className="font-medium text-gray-800"
                                     />
                                 </div>
-                                <EditableText
-                                    value={
+                                <Address
+                                    event="event2"
+                                    eventDetails={
                                         weddingData.weddingDetails.event2
-                                            .address
-                                    }
-                                    onSave={(value) =>
-                                        updateEventDetails(
-                                            "event2",
-                                            "address",
-                                            value,
-                                        )
                                     }
                                     className="text-gray-600 text-sm"
                                 />

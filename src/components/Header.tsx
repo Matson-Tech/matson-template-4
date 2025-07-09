@@ -3,10 +3,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useWedding } from "@/contexts/WeddingContext";
-import scrollToElement from "@/utils/scrollTo";
 import { cn } from "@/lib/utils";
+import scrollToElement from "@/utils/scrollTo";
 
-export const Header = () => {
+interface HeaderProps {
+    Fixed?: boolean;
+}
+
+export const Header: React.FC<HeaderProps> = ({ Fixed }) => {
     const { isLoggedIn, logout, weddingData } = useWedding();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
@@ -34,7 +38,6 @@ export const Header = () => {
 
     const handleLogout = async () => {
         await logout();
-        navigate("/");
     };
 
     const navItems = [
@@ -51,7 +54,7 @@ export const Header = () => {
         <header
             className={cn(
                 "fixed top-0 w-full bg-white/95 backdrop-blur-sm shadow-sm z-50 transition-opacity duration-300",
-                isScrolled ? "opacity-100" : "opacity-0",
+                isScrolled || Fixed ? "opacity-100" : "opacity-0",
             )}
         >
             <div className="container mx-auto px-4 py-4">
