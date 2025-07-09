@@ -85,6 +85,14 @@ const EditableImage: React.FC<EditableImageProps> = ({
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>{children}</DialogTrigger>
                 <DialogTrigger asChild>
+                    <button
+                        className="p-0 m-0 block max-w-fit max-h-fit"
+                        type="button"
+                    >
+                        <HoverUploadIcon />
+                    </button>
+                </DialogTrigger>
+                <DialogTrigger asChild>
                     <Button
                         variant="ghost"
                         size="sm"
@@ -143,7 +151,6 @@ const EditableImage: React.FC<EditableImageProps> = ({
                     </div>
                 </DialogContent>
             </Dialog>
-            <HoverUploadIcon />
         </div>
     );
 };

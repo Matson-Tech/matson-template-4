@@ -8,10 +8,20 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
 import Loading from "@/components/ui-custome/Loading/Loading";
 import { useWedding } from "@/contexts/WeddingContext";
+import deleteImage from "@/utils/deleteImage";
+import messageOnUpdate, { useCase } from "@/utils/messageOnUpdate";
+import DeletableItem from "@/components/Editable/DeleteableItem";
+import Footer from "@/components/Footer";
 
 const AllImages = () => {
-    const { weddingData, updateGalleryImage, isLoggedIn, globalIsLoading } =
-        useWedding();
+    const {
+        weddingData,
+        updateGalleryImage,
+        isLoggedIn,
+        globalIsLoading,
+        user,
+        updateWeddingData,
+    } = useWedding();
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
 
@@ -29,6 +39,30 @@ const AllImages = () => {
         );
     });
 
+    const handleDelete = async (name: string, indexToRemove: number) => {
+        const updatedGallery = [...weddingData.gallery];
+        updatedGallery.splice(indexToRemove, 1);
+
+        const updated = await deleteImage(user, name);
+
+        if (!updated) {
+            return;
+        }
+
+        const isUpdated = await updateWeddingData({ gallery: updatedGallery });
+        messageOnUpdate(isUpdated, "photo", useCase.Delete);
+    };
+
+    const handleUpdate = async (
+        newImage: File | null,
+        imageCaption?: string,
+        index?: number,
+    ) => {
+        setUploadingIndex(index);
+        await updateGalleryImage(newImage, imageCaption, index);
+        setUploadingIndex(null);
+    };
+
     if (globalIsLoading) {
         return <Loading />;
     }
@@ -36,7 +70,6 @@ const AllImages = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-200">
             <Header Fixed />
-
             <div className="container mx-auto px-4 py-24">
                 <div className="max-w-6xl mx-auto space-y-8">
                     {/* Header */}
@@ -63,70 +96,87 @@ const AllImages = () => {
                                 key={`fade-${image.id}`}
                                 delay={(index + 1) * 100}
                             >
-                                <EditableImage
-                                    onUpdate={updateGalleryImage}
-                                    key={`${image.id}-editable`}
-                                    index={index}
-                                    label={`Edit gallery image ${index + 1}`}
-                                    imageCaption={image.caption}
-                                    ImageCaptionAvailable
-                                    className="relative"
+                                <DeletableItem
+                                    onDelete={() =>
+                                        handleDelete(
+                                            `gallery_image_${index}`,
+                                            index,
+                                        )
+                                    }
+                                    iconClassName={
+                                        index >= weddingData.gallery.length &&
+                                        "hidden"
+                                    }
                                 >
-                                    <div
-                                        key={image.id}
-                                        className="relative group aspect-square bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+                                    <EditableImage
+                                        onUpdate={handleUpdate}
+                                        key={`${image.id}-editable`}
+                                        index={index}
+                                        label={`Edit gallery image ${index + 1}`}
+                                        imageCaption={image.caption}
+                                        ImageCaptionAvailable
+                                        className="relative"
                                     >
-                                        {image.url && (
-                                            <img
-                                                src={image.url}
-                                                alt={
-                                                    image.caption ||
-                                                    `Gallery image ${index + 1}`
-                                                }
-                                                className="w-full h-full object-cover cursor-pointer"
-                                                onClick={() =>
-                                                    setSelectedImage(image.url)
-                                                }
-                                                onKeyDown={() =>
-                                                    setSelectedImage(image.url)
-                                                }
-                                            />
-                                        )}
-                                        {/* Image caption */}
-                                        {image.caption && (
-                                            <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-2">
-                                                <p className="text-xs">
-                                                    {image.caption}
-                                                </p>
-                                            </div>
-                                        )}
-                                        {isLoggedIn && ( // Empty slot
-                                            <div className="w-full h-full flex items-center justify-center bg-gray-100 border-2 border-dashed border-gray-300">
-                                                {isLoggedIn && (
-                                                    <span className="cursor-pointer flex flex-col items-center space-y-2 p-4 hover:bg-gray-50 transition-colors rounded-lg">
-                                                        {uploadingIndex ===
-                                                        index ? (
-                                                            <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
-                                                        ) : (
-                                                            <>
-                                                                <Camera className="h-8 w-8 text-gray-400" />
-                                                                <span className="text-sm text-gray-500 text-center">
-                                                                    Upload Photo
-                                                                </span>
-                                                            </>
-                                                        )}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                </EditableImage>
+                                        <div
+                                            key={image.id}
+                                            className="relative group aspect-square bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+                                        >
+                                            {image.url && (
+                                                <img
+                                                    src={image.url}
+                                                    alt={
+                                                        image.caption ||
+                                                        `Gallery image ${index + 1}`
+                                                    }
+                                                    className="w-full h-full object-cover cursor-pointer"
+                                                    onClick={() =>
+                                                        setSelectedImage(
+                                                            image.url,
+                                                        )
+                                                    }
+                                                    onKeyDown={() =>
+                                                        setSelectedImage(
+                                                            image.url,
+                                                        )
+                                                    }
+                                                />
+                                            )}
+                                            {/* Image caption */}
+                                            {image.caption && (
+                                                <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-2">
+                                                    <p className="text-xs">
+                                                        {image.caption}
+                                                    </p>
+                                                </div>
+                                            )}
+                                            {isLoggedIn && ( // Empty slot
+                                                <div className="w-full h-full flex items-center justify-center bg-gray-100 border-2 border-dashed border-gray-300">
+                                                    {isLoggedIn && (
+                                                        <span className="cursor-pointer flex flex-col items-center space-y-2 p-4 hover:bg-gray-50 transition-colors rounded-lg">
+                                                            {uploadingIndex ===
+                                                            index ? (
+                                                                <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                                                            ) : (
+                                                                <>
+                                                                    <Camera className="h-8 w-8 text-gray-400" />
+                                                                    <span className="text-sm text-gray-500 text-center">
+                                                                        Upload
+                                                                        Photo
+                                                                    </span>
+                                                                </>
+                                                            )}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </EditableImage>
+                                </DeletableItem>
                             </FadeIn>
                         ))}
                     </div>
                 </div>
             </div>
-
             {/* Image preview modal */}
             <Dialog
                 open={!!selectedImage}
@@ -155,6 +205,7 @@ const AllImages = () => {
                     </div>
                 </DialogContent>
             </Dialog>
+            <Footer className="bg-purple-100 border-t-purple-300" />
         </div>
     );
 };

@@ -1,10 +1,11 @@
 import { Heart, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useWedding } from "@/contexts/WeddingContext";
 import { cn } from "@/lib/utils";
 import scrollToElement from "@/utils/scrollTo";
+import { Separator } from "@/components/ui/separator";
 
 interface HeaderProps {
     Fixed?: boolean;
@@ -54,17 +55,20 @@ export const Header: React.FC<HeaderProps> = ({ Fixed }) => {
         <header
             className={cn(
                 "fixed top-0 w-full bg-white/95 backdrop-blur-sm shadow-sm z-50 transition-opacity duration-300",
-                isScrolled || Fixed ? "opacity-100" : "opacity-0",
+                isScrolled || Fixed || isMenuOpen ? "opacity-100" : "opacity-0",
             )}
         >
             <div className="container mx-auto px-4 py-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                         <Heart className="h-6 w-6 text-pink-500" />
-                        <span className="text-xl font-normal text-gray-800 font-serif">
+                        <Link
+                            to="/"
+                            className="text-xl font-normal text-gray-800 font-serif"
+                        >
                             {weddingData.couple.groomName[0]} &{" "}
                             {weddingData.couple.brideName[0]} Wedding
-                        </span>
+                        </Link>
                         <Heart className="h-6 w-6 text-pink-500" />
                     </div>
 
@@ -100,34 +104,46 @@ export const Header: React.FC<HeaderProps> = ({ Fixed }) => {
                         {isMenuOpen ? <X /> : <Menu />}
                     </button>
                 </div>
-
-                {/* Mobile Menu */}
-                {isMenuOpen && (
-                    <div className="md:hidden mt-4 pb-4 border-t">
-                        <nav className="flex flex-col space-y-3 mt-4">
-                            {navItems.map((item) => (
-                                <button
-                                    key={item.id}
-                                    onClick={() => scrollToSection(item.id)}
-                                    className="text-left text-gray-600 hover:text-pink-500 transition-colors"
-                                    type="button"
-                                >
-                                    {item.label}
-                                </button>
-                            ))}
-                            {isLoggedIn && (
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={handleLogout}
-                                    className="w-fit"
-                                >
-                                    Logout
-                                </Button>
-                            )}
-                        </nav>
-                    </div>
+            </div>
+            {/* Mobile Menu */}
+            <div
+                className={cn(
+                    "md:hidden transition-all mt-4 p-4",
+                    isMenuOpen
+                        ? "opacity-100 border-t h-screen"
+                        : "opacity-0 -mt-4 p-2",
                 )}
+            >
+                <nav
+                    className={cn(
+                        "flex flex-col space-y-3 mt-4",
+                        !isMenuOpen && "hidden",
+                    )}
+                >
+                    {navItems.map((item, index) => (
+                        <>
+                            {index !== 0 && <Separator decorative />}
+                            <button
+                                key={item.id}
+                                onClick={() => scrollToSection(item.id)}
+                                className="text-gray-600 hover:text-pink-500 transition-colors font-serif"
+                                type="button"
+                            >
+                                {item.label}
+                            </button>
+                        </>
+                    ))}
+                    {isLoggedIn && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleLogout}
+                            className="w-fit"
+                        >
+                            Logout
+                        </Button>
+                    )}
+                </nav>
             </div>
         </header>
     );

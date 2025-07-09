@@ -2,12 +2,29 @@ import { Camera } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useWedding } from "@/contexts/WeddingContext";
+import deleteImage from "@/utils/deleteImage";
+import messageOnUpdate, { useCase } from "@/utils/messageOnUpdate";
+import FadeIn from "./animations/FadeIn";
+import DeletableItem from "./Editable/DeleteableItem";
 import EditableImage from "./Editable/EditableImage";
 import { WeddingSection } from "./WeddingSection";
-import FadeIn from "./animations/FadeIn";
 
 export const GallerySection = () => {
-    const { weddingData, updateGalleryImage } = useWedding();
+    const { weddingData, updateGalleryImage, user, updateWeddingData } =
+        useWedding();
+    const handleDelete = async (name: string, indexToRemove: number) => {
+        const updatedGallery = [...weddingData.gallery];
+        updatedGallery.splice(indexToRemove, 1);
+
+        const updated = await deleteImage(user, name);
+
+        if (!updated) {
+            return;
+        }
+
+        const isUpdated = await updateWeddingData({ gallery: updatedGallery });
+        messageOnUpdate(isUpdated, "photo", useCase.Delete);
+    };
 
     const displayImages = weddingData.gallery.slice(0, 3);
 
@@ -19,7 +36,7 @@ export const GallerySection = () => {
                         <h2 className="text-3xl md:text-4xl font-bold text-gray-800 font-serif mb-4">
                             Our Gallery
                         </h2>
-                        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                        <p className="sub-text">
                             Capturing the beautiful moments of our journey
                             together
                         </p>
@@ -32,38 +49,47 @@ export const GallerySection = () => {
                             key={`fade-${image.id}`}
                             delay={(index + 1) * 100}
                         >
-                            <EditableImage
-                                onUpdate={updateGalleryImage}
-                                key={`${image.id}-editable`}
-                                index={index}
-                                label={`Edit gallery image ${index + 1}`}
-                                imageCaption={image.caption}
-                                ImageCaptionAvailable
-                                className="relative"
+                            <DeletableItem
+                                onDelete={() =>
+                                    handleDelete(
+                                        `gallery_image_${index}`,
+                                        index,
+                                    )
+                                }
                             >
-                                <div
-                                    key={image.id}
-                                    className="relative group aspect-square bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+                                <EditableImage
+                                    onUpdate={updateGalleryImage}
+                                    key={`${image.id}-editable`}
+                                    index={index}
+                                    label={`Edit gallery image ${index + 1}`}
+                                    imageCaption={image.caption}
+                                    ImageCaptionAvailable
+                                    className="relative"
                                 >
-                                    <img
-                                        src={image.url}
-                                        alt={
-                                            image.caption ||
-                                            `Gallery image ${index + 1}`
-                                        }
-                                        className="w-full h-full object-cover cursor-pointer"
-                                    />
+                                    <div
+                                        key={image.id}
+                                        className="relative group aspect-square bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+                                    >
+                                        <img
+                                            src={image.url}
+                                            alt={
+                                                image.caption ||
+                                                `Gallery image ${index + 1}`
+                                            }
+                                            className="w-full h-full object-cover cursor-pointer"
+                                        />
 
-                                    {/* Image caption */}
-                                    {image.caption && (
-                                        <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3">
-                                            <p className="text-sm">
-                                                {image.caption}
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
-                            </EditableImage>
+                                        {/* Image caption */}
+                                        {image.caption && (
+                                            <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white p-3">
+                                                <p className="text-sm">
+                                                    {image.caption}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </EditableImage>
+                            </DeletableItem>
                         </FadeIn>
                     ))}
                 </div>

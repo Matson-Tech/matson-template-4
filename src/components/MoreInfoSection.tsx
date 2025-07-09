@@ -2,9 +2,9 @@ import { Info } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useWedding } from "@/contexts/WeddingContext";
 import messageOnUpdate from "@/utils/messageOnUpdate";
+import FadeIn from "./animations/FadeIn";
 import { EditableText } from "./EditableText";
 import { WeddingSection } from "./WeddingSection";
-import FadeIn from "./animations/FadeIn";
 
 export const MoreInfoSection = () => {
     const { weddingData, updateWeddingData } = useWedding();
@@ -33,11 +33,12 @@ export const MoreInfoSection = () => {
                     <Card className="bg-white/80 backdrop-blur-sm shadow-xl">
                         <CardHeader className="text-center">
                             <FadeIn delay={100}>
-                                <CardTitle className="flex items-center justify-center space-x-2 text-2xl md:text-3xl font-bold text-gray-800 font-serif">
+                                <CardTitle className="flex items-center justify-center space-x-2">
                                     <Info className="h-6 w-6 text-teal-600" />
                                     <EditableText
                                         value={weddingData.moreInfo.title}
                                         onSave={updateTitle}
+                                        className="text-xl md:text-3xl font-bold text-gray-800 font-serif"
                                     />
                                 </CardTitle>
                             </FadeIn>

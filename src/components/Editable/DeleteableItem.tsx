@@ -16,6 +16,7 @@ interface DeleteableItemProps {
     onDelete?: () => void;
     label?: string;
     className?: string;
+    iconClassName?: string;
     children?: React.ReactNode;
     isLoading?: boolean;
 }
@@ -25,6 +26,7 @@ const DeletableItem: React.FC<DeleteableItemProps> = ({
     onDelete,
     label = "Edit Text",
     className = "",
+    iconClassName = "",
     children,
     isLoading,
 }) => {
@@ -52,7 +54,7 @@ const DeletableItem: React.FC<DeleteableItemProps> = ({
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="absolute top-2 right-2 bg-white hover:bg-gray-300 opacity-100 transition-opacity p-1 h-6 w-6"
+                        className={`absolute top-2 right-2 bg-white hover:bg-gray-300 opacity-100 transition-opacity p-1 h-6 w-6 ${iconClassName}`}
                     >
                         {/* Trash can Icon */}
                         <svg

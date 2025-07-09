@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Loading from "@/components/ui-custome/Loading/Loading";
 import { useWedding } from "@/contexts/WeddingContext";
+import Footer from "@/components/Footer";
 
 const AllWishes = () => {
     const { weddingWishes, loadAllWeddingWishes, globalIsLoading } =
@@ -100,6 +101,7 @@ const AllWishes = () => {
                     )}
                 </div>
             </div>
+            <Footer />
         </div>
     );
 };
