@@ -2,10 +2,10 @@ import { Heart, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { useWedding } from "@/contexts/WeddingContext";
 import { cn } from "@/lib/utils";
 import scrollToElement from "@/utils/scrollTo";
-import { Separator } from "@/components/ui/separator";
 
 interface HeaderProps {
     Fixed?: boolean;

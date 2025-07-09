@@ -1,8 +1,10 @@
 import { ArrowLeft, Camera, X } from "lucide-react";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import FadeIn from "@/components/animations/FadeIn";
+import DeletableItem from "@/components/Editable/DeleteableItem";
 import EditableImage from "@/components/Editable/EditableImage";
+import Footer from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
@@ -10,8 +12,7 @@ import Loading from "@/components/ui-custome/Loading/Loading";
 import { useWedding } from "@/contexts/WeddingContext";
 import deleteImage from "@/utils/deleteImage";
 import messageOnUpdate, { useCase } from "@/utils/messageOnUpdate";
-import DeletableItem from "@/components/Editable/DeleteableItem";
-import Footer from "@/components/Footer";
+import scrollToElement from "@/utils/scrollTo";
 
 const AllImages = () => {
     const {
@@ -38,6 +39,8 @@ const AllImages = () => {
             }
         );
     });
+
+    useLayoutEffect(() => window.scrollTo(0, 0), []);
 
     const handleDelete = async (name: string, indexToRemove: number) => {
         const updatedGallery = [...weddingData.gallery];
@@ -68,7 +71,7 @@ const AllImages = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-200">
+        <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-100 to-purple-200">
             <Header Fixed />
             <div className="container mx-auto px-4 py-24">
                 <div className="max-w-6xl mx-auto space-y-8">
@@ -183,7 +186,7 @@ const AllImages = () => {
                 onOpenChange={() => setSelectedImage(null)}
             >
                 <DialogContent
-                    className="max-w-4xl w-fit p-0 rounded-sm overflow-hidden [button[aria-label='Close']]:hidden"
+                    className="md:max-w-4xl md:w-fit max-w-96 p-1 md:p-0 rounded-sm overflow-hidden"
                     closeButton={false}
                 >
                     <DialogClose asChild>

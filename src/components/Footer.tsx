@@ -13,7 +13,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
     return (
         <div
             className={cn(
-                "flex flex-col items-center justify-between p-8 border-t-2 border-pink-600/20",
+                "flex flex-col items-center justify-between p-8 border-t-2 border-pink-600/20 mt-auto",
                 className
                     ? className
                     : "bg-gradient-to-br from-pink-100 to-rose-200",
