@@ -1,6 +1,6 @@
 import { ArrowLeft, Camera, X } from "lucide-react";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLayoutEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import FadeIn from "@/components/animations/FadeIn";
 import DeletableItem from "@/components/Editable/DeleteableItem";
 import EditableImage from "@/components/Editable/EditableImage";
@@ -12,7 +12,6 @@ import Loading from "@/components/ui-custome/Loading/Loading";
 import { useWedding } from "@/contexts/WeddingContext";
 import deleteImage from "@/utils/deleteImage";
 import messageOnUpdate, { useCase } from "@/utils/messageOnUpdate";
-import scrollToElement from "@/utils/scrollTo";
 
 const AllImages = () => {
     const {
