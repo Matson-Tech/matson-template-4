@@ -86,16 +86,19 @@ const defaultWeddingData: WeddingData = {
             id: "0",
             url: "/couple/white.png",
             caption: null,
+            name: null,
         },
         {
             id: "1",
             url: "/couple/white.png",
             caption: null,
+            name: null,
         },
         {
             id: "2",
             url: "/couple/white.png",
             caption: null,
+            name: null,
         },
     ],
     moreInfo: {
@@ -136,7 +139,7 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({
                     await supabase
                         .from("wedding_data")
                         .select("data")
-                        .eq("id", id)
+                        .eq("user_id", id)
                         .maybeSingle();
 
                 const { data: wishData, error: wishError } = await supabase
@@ -252,22 +255,23 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({
         imageCaption: string | null,
         index: number,
     ) => {
+        const imageId = `${Date.now()}-${crypto.randomUUID()}`;
+        const imageName = `gallery_image_${imageId}`;
+
         const updatedGallery = [...weddingData.gallery];
 
         if (index >= updatedGallery.length) {
             updatedGallery.push({
-                id: `${Date.now()}-${crypto.randomUUID()}`,
+                id: imageId,
                 url: "",
                 caption: imageCaption,
+                name: imageName,
             });
         }
 
         if (file) {
-            const imageUrl = await uploadImage(
-                file,
-                user,
-                `gallery_image_${index}`,
-            );
+            const imageUrl = await uploadImage(file, user, imageName);
+            if (!imageUrl) return;
             updatedGallery[index].url = imageUrl;
         }
 
@@ -307,7 +311,7 @@ export const WeddingProvider: React.FC<{ children: React.ReactNode }> = ({
             const { error } = await supabase.from("guest_wishes").insert({
                 name: wish.name,
                 message: wish.message,
-                variant: import.meta.env.VITE_WEBSITE_KEY || "default",
+                variant: import.meta.env.VITE_WEBSITE_KEY,
             });
 
             if (error) {

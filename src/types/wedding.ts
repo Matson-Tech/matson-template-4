@@ -50,6 +50,7 @@ export interface GalleryImage {
     id: string;
     url: string;
     caption: string | null;
+    name: string;
 }
 
 export interface WeddingMoreInfo {
