@@ -1,19 +1,23 @@
 import { ArrowLeft, Heart, MessageCircle } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import FadeIn from "@/components/animations/FadeIn";
+import Footer from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Loading from "@/components/ui-custome/Loading/Loading";
-import { useWedding } from "@/contexts/WeddingContext";
-import Footer from "@/components/Footer";
+import useSyncUsername from "@/hooks/useSyncUsername";
+import useWedding from "@/hooks/useWedding";
 
 const AllWishes = () => {
-    const { weddingWishes, loadAllWeddingWishes, globalIsLoading } =
+    const { weddingWishes, loadAllWeddingWishes, globalIsLoading, user } =
         useWedding();
     const [isLoading, setIsLoading] = useState(true);
+    const { username } = useParams();
+    const navigate = useNavigate();
 
+    useSyncUsername(username);
     useEffect(() => {
         const loadWish = async () => {
             await loadAllWeddingWishes();
@@ -21,6 +25,10 @@ const AllWishes = () => {
         };
         loadWish();
     }, [loadAllWeddingWishes]);
+
+    const handleSendAWish = () => {
+        navigate(`/${user?.username}`, { state: { scrollTo: "wishes" } });
+    };
 
     if (globalIsLoading || isLoading) {
         return <Loading />;
@@ -35,7 +43,7 @@ const AllWishes = () => {
                     <div className="text-center space-y-4">
                         <FadeIn direction="left" delay={100}>
                             <Button asChild variant="outline" className="mb-4">
-                                <Link to="/">
+                                <Link to={`/${user?.username}`}>
                                     <ArrowLeft className="h-4 w-4 mr-2" />
                                     Back to Wedding Website
                                 </Link>
@@ -65,10 +73,10 @@ const AllWishes = () => {
                                     Be the first to send your beautiful wishes!
                                 </p>
                                 <Button
-                                    asChild
                                     className="bg-pink-500 hover:bg-pink-600"
+                                    onClick={handleSendAWish}
                                 >
-                                    <Link to="/#wishes">Send a Wish</Link>
+                                    Send a Wish
                                 </Button>
                             </CardContent>
                         </Card>

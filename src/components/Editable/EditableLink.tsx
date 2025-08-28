@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Label } from "@/components/ui/label.tsx";
-import { useWedding } from "@/contexts/WeddingContext";
+import useWedding from "@/hooks/useWedding";
 import { cn } from "@/lib/utils";
 import "@/styles/linkStyle.css";
 

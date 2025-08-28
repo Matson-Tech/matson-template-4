@@ -1,6 +1,7 @@
 import type React from "react";
 import { useId, useState } from "react";
-import { useWedding } from "@/contexts/WeddingContext";
+import useWedding from "@/hooks/useWedding";
+import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import {
     Dialog,
@@ -11,38 +12,44 @@ import {
 } from "../ui/dialog";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import ImageDropArea from "../ui-custome/ImageDropArea";
 import HoverUploadIcon from "../ui-custome/HoverUploadIcon";
+import ImageDropArea from "../ui-custome/ImageDropArea";
 
 type EditableImageProps = {
-    className?: string;
-    label?: string;
-    ImageCaptionAvailable?: boolean;
-    imageCaption?: string;
-    index?: number;
     onUpdate: (
         newImage: File | null,
         imageCaption?: string,
         index?: number,
+        oldImageName?: string,
     ) => Promise<void>;
     children: React.ReactNode;
+    className?: string;
     iconClassName?: string;
+    enableIcon?: boolean;
+    label?: string;
+    ImageCaptionAvailable?: boolean;
+    imageCaption?: string;
+    index?: number;
+    imageName?: string;
+    isEmpty?: boolean;
 };
 
 const EditableImage: React.FC<EditableImageProps> = ({
     onUpdate,
     index,
     className,
+    iconClassName,
+    enableIcon: isIconEnabled,
     ImageCaptionAvailable: isImageCaptionAvailable = false,
-    imageCaption = null,
+    imageCaption = "",
     label = "Edit Image",
     children,
-    iconClassName,
+    imageName,
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const { isLoggedIn } = useWedding();
-    const [editedImageCaption, setEditedImageCaption] = useState<string>(
-        imageCaption || "",
+    const [editedImageCaption, setEditedImageCaption] = useState<string | null>(
+        imageCaption,
     );
     const [image, setImage] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -50,7 +57,7 @@ const EditableImage: React.FC<EditableImageProps> = ({
 
     const handleUpdate = async () => {
         setIsLoading(true);
-        await onUpdate(image, editedImageCaption, index);
+        await onUpdate(image, editedImageCaption, index, imageName);
         setImage(null);
         setIsOpen(false);
         setIsLoading(false);
@@ -62,45 +69,50 @@ const EditableImage: React.FC<EditableImageProps> = ({
         setIsOpen(false);
     };
 
-    if (!isLoggedIn) {
-        return <div className={`${className}`}>{children}</div>;
-    }
+    const isUpdateDisabled = () => {
+        if (editedImageCaption === "") {
+            setEditedImageCaption(null);
+        }
 
-    const isUpdateDisabled = (
-        isLoading: boolean,
-        image: File,
-        imageCaption: string,
-        editedImageCaption: string,
-    ): boolean => {
+        if (isLoading) return true;
+        if (!image && !imageName) return true;
         return (
-            isLoading ||
-            (!image &&
-                (!isImageCaptionAvailable ||
-                    imageCaption === editedImageCaption))
+            !image &&
+            (!isImageCaptionAvailable || imageCaption === editedImageCaption)
         );
     };
 
+    if (!isLoggedIn) {
+        return <span className={`${className}`}>{children}</span>;
+    }
+
     return (
-        <div className={`relative group ${className}`}>
+        <div className={`relative group overflow-hidden ${className}`}>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogTrigger asChild>{children}</DialogTrigger>
                 <DialogTrigger asChild>
-                    <button
-                        className="p-0 m-0 block max-w-fit max-h-fit"
-                        type="button"
-                    >
-                        <HoverUploadIcon />
-                    </button>
+                    <span>{children}</span>
                 </DialogTrigger>
                 <DialogTrigger asChild>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className={`absolute bg-white hover:bg-gray-300 rounded-sm bottom-2 right-2 z-50 opacity-100 transition-opacity p-1 h-6 w-6 ${iconClassName}`}
-                        aria-label="Edit Image"
-                    >
-                        ✏️
-                    </Button>
+                    {isIconEnabled ? (
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className={cn(
+                                "absolute bg-white hover:bg-gray-300 rounded-sm bottom-2 right-2 z-50 opacity-100 transition-opacity p-1 h-6 w-6 cursor-pointer",
+                                iconClassName,
+                            )}
+                            aria-label="Edit Image"
+                        >
+                            ✏️
+                        </Button>
+                    ) : (
+                        <button
+                            className="p-0 m-0 block max-w-fit max-h-fit"
+                            type="button"
+                        >
+                            <HoverUploadIcon />
+                        </button>
+                    )}
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
@@ -138,13 +150,8 @@ const EditableImage: React.FC<EditableImageProps> = ({
                         <Button
                             onClick={handleUpdate}
                             variant="default"
-                            className="rounded-sm"
-                            disabled={isUpdateDisabled(
-                                isLoading,
-                                image,
-                                imageCaption,
-                                editedImageCaption,
-                            )}
+                            className="rounded-sm cursor-pointer"
+                            disabled={isUpdateDisabled()}
                         >
                             {isLoading ? "Uploading..." : "Update"}
                         </Button>

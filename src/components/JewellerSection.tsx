@@ -1,9 +1,9 @@
 import { ExternalLink, Gem } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useWedding } from "@/contexts/WeddingContext";
-import { WeddingSection } from "./WeddingSection";
+import useWedding from "@/hooks/useWedding";
 import FadeIn from "./animations/FadeIn";
+import { WeddingSection } from "./WeddingSection";
 
 export const JewellerSection = () => {
     const { weddingData } = useWedding();

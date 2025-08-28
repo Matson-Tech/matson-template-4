@@ -6,13 +6,15 @@ import FadeIn from "./animations/FadeIn";
 import Gallery from "./Gallery";
 import ImagePreview from "./ImagePreview";
 import { WeddingSection } from "./WeddingSection";
+import useWedding from "@/hooks/useWedding";
 
 export const GallerySection = () => {
+    const { user } = useWedding();
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const limit = 3;
 
     return (
-        <WeddingSection id="gallery" className="bg-[#e4c9f1]">
+        <WeddingSection id={"gallery"} className="bg-[#e4c9f1]">
             <Gallery limit={limit} setSelectedImage={setSelectedImage}>
                 <FadeIn delay={500} direction="up">
                     <div className="text-center">
@@ -20,7 +22,7 @@ export const GallerySection = () => {
                             asChild
                             className="bg-purple-500 hover:bg-purple-600 text-white px-8 py-3"
                         >
-                            <Link to="/gallery">
+                            <Link to={`/gallery/${user?.username}`}>
                                 <Camera className="h-5 w-5 mr-2" />
                                 View All Photos
                             </Link>

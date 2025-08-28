@@ -1,4 +1,4 @@
-import { useWedding } from "@/contexts/WeddingContext";
+import useWedding from "@/hooks/useWedding";
 import type { WeddingContact, WeddingEvent } from "@/types/wedding";
 import messageOnUpdate from "@/utils/messageOnUpdate";
 import EditableLink from "./Editable/EditableLink";

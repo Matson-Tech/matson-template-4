@@ -1,6 +1,6 @@
 import { HeartIcon } from "lucide-react";
 import type React from "react";
-import { useWedding } from "@/contexts/WeddingContext";
+import useWedding from "@/hooks/useWedding";
 import { cn } from "@/lib/utils";
 
 interface FooterProps {

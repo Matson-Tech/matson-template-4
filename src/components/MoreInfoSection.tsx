@@ -1,6 +1,6 @@
 import { Info } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useWedding } from "@/contexts/WeddingContext";
+import useWedding from "@/hooks/useWedding";
 import messageOnUpdate from "@/utils/messageOnUpdate";
 import FadeIn from "./animations/FadeIn";
 import { EditableText } from "./EditableText";

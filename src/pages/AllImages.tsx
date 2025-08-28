@@ -1,20 +1,24 @@
 import { useLayoutEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Footer from "@/components/Footer";
 import Gallery from "@/components/Gallery";
 import { Header } from "@/components/Header";
 import ImagePreview from "@/components/ImagePreview";
 import Loading from "@/components/ui-custome/Loading/Loading";
-import { useWedding } from "@/contexts/WeddingContext";
+import useSyncUsername from "@/hooks/useSyncUsername";
+import useWedding from "@/hooks/useWedding";
 
 const AllImages = () => {
     const { weddingData, isLoggedIn, globalIsLoading } = useWedding();
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const { username } = useParams();
 
     // Create a grid that shows existing images and empty slots for new uploads
     const maxImages = isLoggedIn
         ? import.meta.env.VITE_GALLERY_IMAGE_LIMIT || 12
         : weddingData.gallery.length;
 
+    useSyncUsername(username);
     useLayoutEffect(() => window.scrollTo(0, 0), []);
 
     if (globalIsLoading) {

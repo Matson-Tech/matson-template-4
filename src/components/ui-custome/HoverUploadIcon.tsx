@@ -1,5 +1,5 @@
 import { Upload } from "lucide-react";
-import { useWedding } from "@/contexts/WeddingContext";
+import useWedding from "@/hooks/useWedding";
 
 const HoverUploadIcon: React.FC = () => {
     const { isLoggedIn } = useWedding();

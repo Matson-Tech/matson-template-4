@@ -1,26 +1,26 @@
+import { Heart, MessageCircle, Send } from "lucide-react";
 import { useState } from "react";
-import { useWedding } from "@/contexts/WeddingContext";
-import { WeddingSection } from "./WeddingSection";
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
     Dialog,
     DialogContent,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogFooter,
 } from "@/components/ui/dialog";
-import { Link } from "react-router-dom";
-import { Heart, MessageCircle, Send } from "lucide-react";
-import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import useWedding from "@/hooks/useWedding";
 import type { WeddingWish } from "@/types/wedding";
 import FadeIn from "./animations/FadeIn";
 import { Label } from "./ui/label";
+import { WeddingSection } from "./WeddingSection";
 
 export const WishesSection = () => {
-    const { weddingWishes, addWish } = useWedding();
+    const { weddingWishes, addWish, user } = useWedding();
     const [isAddingWish, setIsAddingWish] = useState(false);
     const [wishForm, setWishForm] = useState<WeddingWish>({
         id: "",
@@ -38,7 +38,7 @@ export const WishesSection = () => {
         setIsSubmitting(true);
         try {
             await addWish(wishForm);
-            toast.success("Thank you for your beautiful wish!");
+            toast.success("Thank you for your wish!");
             setWishForm({ id: "", name: "", message: "" });
             setIsAddingWish(false);
         } catch (error) {
@@ -51,7 +51,7 @@ export const WishesSection = () => {
 
     return (
         <WeddingSection
-            id="wishes"
+            id={"wishes"}
             className="bg-gradient-to-br from-rose-100 to-pink-200"
         >
             <div className="space-y-12">
@@ -112,7 +112,7 @@ export const WishesSection = () => {
                             variant="outline"
                             className="border-pink-300 text-pink-600 hover:bg-pink-50 px-8 py-3"
                         >
-                            <Link to="/wishes">
+                            <Link to={`/wishes/${user?.username}`}>
                                 <MessageCircle className="h-5 w-5 mr-2" />
                                 View All Wishes
                             </Link>

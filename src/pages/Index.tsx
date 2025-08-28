@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { ContactSection } from "@/components/ContactSection";
 import { DetailsSection } from "@/components/DetailsSection";
 import Footer from "@/components/Footer";
@@ -12,13 +12,16 @@ import { ScheduleSection } from "@/components/ScheduleSection";
 import { StorySection } from "@/components/StorySection";
 import Loading from "@/components/ui-custome/Loading/Loading";
 import { WishesSection } from "@/components/WishesSection";
-import { useWedding } from "@/contexts/WeddingContext";
+import useSyncUsername from "@/hooks/useSyncUsername";
+import useWedding from "@/hooks/useWedding";
 import scrollToElement from "@/utils/scrollTo";
 
 const Index = () => {
     const { globalIsLoading } = useWedding();
     const location = useLocation();
+    const { username } = useParams();
 
+    useSyncUsername(username);
     useEffect(() => {
         const scrollTo = location.state?.scrollTo;
         if (scrollTo) {

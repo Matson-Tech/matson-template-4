@@ -9,8 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useWedding } from "@/contexts/WeddingContext";
-import { BluetoothIcon } from "lucide-react";
+import useWedding from "@/hooks/useWedding";
 
 interface EditableTextProps {
     value: string;

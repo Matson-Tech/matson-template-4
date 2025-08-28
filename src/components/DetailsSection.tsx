@@ -1,7 +1,7 @@
 import { Clock, Gift, MapPin, Music, Shirt } from "lucide-react";
 import { type ReactElement, useId } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useWedding } from "@/contexts/WeddingContext";
+import useWedding from "@/hooks/useWedding";
 import type { WeddingEvent, WeddingToKnow } from "@/types/wedding";
 import messageOnUpdate from "@/utils/messageOnUpdate";
 import Address from "./Address";
@@ -62,7 +62,7 @@ export const DetailsSection = () => {
     ];
 
     return (
-        <WeddingSection id="details" className="bg-white">
+        <WeddingSection id={"details"} className="bg-white">
             <div className="space-y-12">
                 <FadeIn delay={100}>
                     <div className="m-auto text-center mb-8">

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useWedding } from "@/contexts/WeddingContext";
+import useWedding from "@/hooks/useWedding";
 import messageOnUpdate from "@/utils/messageOnUpdate";
 import FadeIn from "./animations/FadeIn";
 import { EditableText } from "./EditableText";
@@ -95,7 +95,7 @@ export const HeroSection = () => {
 
     return (
         <WeddingSection
-            id="hero"
+            id={"home"}
             className="bg-gradient-to-br from-pink-100 to-rose-200 min-h-screen flex items-center justify-center relative overflow-hidden"
         >
             {/* Decorative border pattern */}

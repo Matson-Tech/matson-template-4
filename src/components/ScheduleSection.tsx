@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useWedding } from "@/contexts/WeddingContext";
+import useWedding from "@/hooks/useWedding";
 import type { ScheduleItem } from "@/types/wedding";
 import messageOnUpdate, { useCase } from "@/utils/messageOnUpdate";
 import FadeIn from "./animations/FadeIn";

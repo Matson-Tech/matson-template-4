@@ -1,7 +1,7 @@
 import { Mail, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useWedding } from "@/contexts/WeddingContext";
+import useWedding from "@/hooks/useWedding";
 import type { WeddingContact } from "@/types/wedding";
 import messageOnUpdate from "@/utils/messageOnUpdate";
 import Address from "./Address";

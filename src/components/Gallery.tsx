@@ -6,7 +6,7 @@ import {
     useState,
 } from "react";
 import { Link } from "react-router-dom";
-import { useWedding } from "@/contexts/WeddingContext";
+import useWedding from "@/hooks/useWedding";
 import deleteImage from "@/utils/deleteImage";
 import messageOnUpdate, { useCase } from "@/utils/messageOnUpdate";
 import FadeIn from "./animations/FadeIn";
@@ -78,7 +78,7 @@ const Gallery: React.FC<GalleryProps> = ({
                 <div className="text-center space-y-4">
                     {backButton && (
                         <Button asChild variant="outline" className="mb-4">
-                            <Link to="/">
+                            <Link to={`/${user?.username}`}>
                                 <ArrowLeft className="h-4 w-4 mr-2" />
                                 Back to Wedding Website
                             </Link>
@@ -102,6 +102,7 @@ const Gallery: React.FC<GalleryProps> = ({
                         >
                             <DeletableItem
                                 onDelete={() => handleDelete(image.name, index)}
+                                label={`Delete gallery Image ${index + 1}?`}
                                 iconClassName={
                                     index >= weddingData.gallery.length &&
                                     "hidden"
@@ -115,6 +116,7 @@ const Gallery: React.FC<GalleryProps> = ({
                                     imageCaption={image.caption}
                                     ImageCaptionAvailable
                                     className="relative"
+                                    imageName={image.name}
                                 >
                                     <div
                                         key={image.id}

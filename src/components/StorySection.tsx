@@ -1,10 +1,10 @@
-import { useWedding } from "@/contexts/WeddingContext";
+import useWedding from "@/hooks/useWedding";
 import messageOnUpdate from "@/utils/messageOnUpdate";
 import uploadImage from "@/utils/UploadImage";
+import FadeIn from "./animations/FadeIn";
 import EditableImage from "./Editable/EditableImage";
 import { EditableText } from "./EditableText";
 import { WeddingSection } from "./WeddingSection";
-import FadeIn from "./animations/FadeIn";
 
 export const StorySection = () => {
     const { weddingData, updateWeddingData, user } = useWedding();
@@ -24,14 +24,14 @@ export const StorySection = () => {
     };
 
     const updateStoryImage = async (file: File) => {
-        const imageUrl = await uploadImage(file, user, "story_image");
+        const { url: imageUrl } = await uploadImage(file, user, "story_image");
         updateWeddingData({
             story: { ...weddingData.story, image: imageUrl },
         });
     };
 
     return (
-        <WeddingSection id="story" className="bg-[#acd3e8] relative">
+        <WeddingSection id={"story"} className="bg-[#acd3e8] relative">
             <div className="grid md:grid-cols-2 gap-12 items-center">
                 {/* Couple Photo */}
                 <div className="flex justify-center order-1 md:order-2">

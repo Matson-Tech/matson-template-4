@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useWedding } from "@/contexts/WeddingContext";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Heart, Lock, Mail } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import useWedding from "@/hooks/useWedding";
 
 const Login = () => {
-    const { login, isLoggedIn } = useWedding();
+    const { login, isLoggedIn, user } = useWedding();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: "user@gmail.com",
@@ -16,10 +16,12 @@ const Login = () => {
     });
     const [isLoading, setIsLoading] = useState(false);
 
-    if (isLoggedIn) {
-        navigate("/");
-        return null;
-    }
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate(`/${user?.username}`);
+            return;
+        }
+    }, [isLoggedIn, user?.username, navigate]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -35,14 +37,18 @@ const Login = () => {
                 toast.error("Invalid email or password");
             } else {
                 toast.success("Welcome back!");
-                navigate("/");
             }
         } catch (error) {
             toast.error("Something went wrong. Please try again.");
+            console.log(error);
         } finally {
             setIsLoading(false);
         }
     };
+
+    if (isLoggedIn) {
+        return;
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-pink-100 to-rose-200 flex items-center justify-center p-4">
@@ -64,12 +70,16 @@ const Login = () => {
                     <CardContent>
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">
+                                <label
+                                    htmlFor="login-email"
+                                    className="text-sm font-medium text-gray-700"
+                                >
                                     Email
                                 </label>
                                 <div className="relative">
                                     <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                                     <Input
+                                        id={"login-email"}
                                         type="email"
                                         value={formData.email}
                                         onChange={(e) =>
@@ -85,12 +95,16 @@ const Login = () => {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-700">
+                                <label
+                                    htmlFor="login-password"
+                                    className="text-sm font-medium text-gray-700"
+                                >
                                     Password
                                 </label>
                                 <div className="relative">
                                     <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                                     <Input
+                                        id={"login-password"}
                                         type="password"
                                         value={formData.password}
                                         onChange={(e) =>
@@ -116,7 +130,7 @@ const Login = () => {
 
                         <div className="mt-6 text-center">
                             <Link
-                                to="/"
+                                to={`/${user?.username}`}
                                 className="text-pink-600 hover:text-pink-700 text-sm"
                             >
                                 ← Back to Wedding Website

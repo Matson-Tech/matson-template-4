@@ -1,9 +1,9 @@
 import { Heart, Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useWedding } from "@/contexts/WeddingContext";
+import useWedding from "@/hooks/useWedding";
 import { cn } from "@/lib/utils";
 import scrollToElement from "@/utils/scrollTo";
 
@@ -11,8 +11,25 @@ interface HeaderProps {
     Fixed?: boolean;
 }
 
+type NavIds =
+    | "home"
+    | "story"
+    | "details"
+    | "schedule"
+    | "gallery"
+    | "wishes"
+    | "contact"
+    | "info"
+    | "jewellery";
+
+type NavItems = {
+    name: string;
+    id: NavIds;
+    disabled: boolean;
+};
+
 export const Header: React.FC<HeaderProps> = ({ Fixed }) => {
-    const { isLoggedIn, logout, weddingData } = useWedding();
+    const { isLoggedIn, logout, weddingData, user } = useWedding();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
     const navigate = useNavigate();
@@ -30,8 +47,8 @@ export const Header: React.FC<HeaderProps> = ({ Fixed }) => {
         if (isMenuOpen) {
             setIsMenuOpen(false);
         }
-        if (location.pathname !== "/") {
-            navigate("/", { state: { scrollTo: sectionId } });
+        if (location.pathname !== `/${user?.username}`) {
+            navigate(`/${user?.username}`, { state: { scrollTo: sectionId } });
             return;
         }
         scrollToElement(sectionId);
@@ -41,15 +58,44 @@ export const Header: React.FC<HeaderProps> = ({ Fixed }) => {
         await logout();
     };
 
-    const navItems = [
-        { label: "Home", id: "hero" },
-        { label: "Our Story", id: "story" },
-        { label: "Details", id: "details" },
-        { label: "Schedule", id: "schedule" },
-        { label: "Gallery", id: "gallery" },
-        { label: "Wishes", id: "wishes" },
-        { label: "Contact", id: "contact" },
-    ];
+    const navItems: NavItems[] = useMemo(
+        () => [
+            { name: "Home", id: "home", disabled: false },
+            {
+                name: "Our Story",
+                id: "story",
+                disabled: weddingData.story.disabled,
+            },
+            {
+                name: "Wedding Details",
+                id: "details",
+                disabled: weddingData.weddingDetails.disabled,
+            },
+            { name: "Schedule", id: "schedule", disabled: false },
+            { name: "Gallery", id: "gallery", disabled: false },
+            {
+                name: "Wishes",
+                id: "wishes",
+                disabled: weddingData.wishDisabled,
+            },
+            {
+                name: "Contact",
+                id: "contact",
+                disabled: weddingData.contact.disabled,
+            },
+            {
+                name: "Info",
+                id: "info",
+                disabled: true,
+            },
+            {
+                name: "Jeweller",
+                id: "jewellery",
+                disabled: true,
+            },
+        ],
+        [weddingData],
+    );
 
     return (
         <header
@@ -63,7 +109,7 @@ export const Header: React.FC<HeaderProps> = ({ Fixed }) => {
                     <div className="flex items-center space-x-2">
                         <Heart className="h-6 w-6 text-pink-500" />
                         <Link
-                            to="/"
+                            to={`/${user?.username}`}
                             className="text-xl font-normal text-gray-800 font-serif"
                         >
                             {weddingData.couple.groomName[0]} &{" "}
@@ -74,16 +120,18 @@ export const Header: React.FC<HeaderProps> = ({ Fixed }) => {
 
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center space-x-6">
-                        {navItems.map((item) => (
-                            <button
-                                key={item.id}
-                                onClick={() => scrollToSection(item.id)}
-                                className="text-gray-600 hover:text-pink-500 transition-colors"
-                                type="button"
-                            >
-                                {item.label}
-                            </button>
-                        ))}
+                        {navItems
+                            .filter((item) => !item.disabled)
+                            .map((item) => (
+                                <button
+                                    key={item.id}
+                                    onClick={() => scrollToSection(item.id)}
+                                    className="text-gray-600 hover:text-pink-500 transition-colors"
+                                    type="button"
+                                >
+                                    {item.name}
+                                </button>
+                            ))}
                         {isLoggedIn && (
                             <Button
                                 variant="outline"
@@ -120,19 +168,21 @@ export const Header: React.FC<HeaderProps> = ({ Fixed }) => {
                         !isMenuOpen && "hidden",
                     )}
                 >
-                    {navItems.map((item, index) => (
-                        <>
-                            {index !== 0 && <Separator decorative />}
-                            <button
-                                key={item.id}
-                                onClick={() => scrollToSection(item.id)}
-                                className="text-gray-600 hover:text-pink-500 transition-colors font-serif"
-                                type="button"
-                            >
-                                {item.label}
-                            </button>
-                        </>
-                    ))}
+                    {navItems
+                        .filter((item) => !item.disabled)
+                        .map((item, index) => (
+                            <>
+                                {index !== 0 && <Separator decorative />}
+                                <button
+                                    key={item.id}
+                                    onClick={() => scrollToSection(item.id)}
+                                    className="text-gray-600 hover:text-pink-500 transition-colors font-serif"
+                                    type="button"
+                                >
+                                    {item.name}
+                                </button>
+                            </>
+                        ))}
                     {isLoggedIn && (
                         <Button
                             variant="outline"
