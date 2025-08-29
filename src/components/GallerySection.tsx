@@ -2,11 +2,11 @@ import { Camera } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import useWedding from "@/hooks/useWedding";
 import FadeIn from "./animations/FadeIn";
 import Gallery from "./Gallery";
 import ImagePreview from "./ImagePreview";
 import { WeddingSection } from "./WeddingSection";
-import useWedding from "@/hooks/useWedding";
 
 export const GallerySection = () => {
     const { user } = useWedding();

@@ -22,9 +22,13 @@ export const ContactSection = () => {
         messageOnUpdate(isUpdated, field);
     };
 
+    if (weddingData.contact.disabled) {
+        return;
+    }
+
     return (
         <WeddingSection
-            id="contact"
+            id={"contact"}
             className="bg-gradient-to-br from-indigo-100 to-blue-200"
         >
             <div className="space-y-12">

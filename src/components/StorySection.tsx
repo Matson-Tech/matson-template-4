@@ -30,6 +30,10 @@ export const StorySection = () => {
         });
     };
 
+    if (weddingData.story.disabled) {
+        return;
+    }
+
     return (
         <WeddingSection id={"story"} className="bg-[#acd3e8] relative">
             <div className="grid md:grid-cols-2 gap-12 items-center">

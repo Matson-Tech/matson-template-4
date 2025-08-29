@@ -61,6 +61,10 @@ export const DetailsSection = () => {
         },
     ];
 
+    if (weddingData.weddingDetails.disabled) {
+        return;
+    }
+
     return (
         <WeddingSection id={"details"} className="bg-white">
             <div className="space-y-12">

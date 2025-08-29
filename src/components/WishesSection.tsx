@@ -20,7 +20,7 @@ import { Label } from "./ui/label";
 import { WeddingSection } from "./WeddingSection";
 
 export const WishesSection = () => {
-    const { weddingWishes, addWish, user } = useWedding();
+    const { weddingData, weddingWishes, addWish, user } = useWedding();
     const [isAddingWish, setIsAddingWish] = useState(false);
     const [wishForm, setWishForm] = useState<WeddingWish>({
         id: "",
@@ -48,6 +48,10 @@ export const WishesSection = () => {
             setIsSubmitting(false);
         }
     };
+
+    if (weddingData.wishDisabled) {
+        return;
+    }
 
     return (
         <WeddingSection

@@ -8,9 +8,13 @@ import { WeddingSection } from "./WeddingSection";
 export const JewellerSection = () => {
     const { weddingData } = useWedding();
 
+    if (weddingData.jeweller.disabled) {
+        return;
+    }
+
     return (
         <WeddingSection
-            id="jeweller"
+            id={"jeweller"}
             className="bg-gradient-to-br from-yellow-100 to-amber-200"
         >
             <div className="max-w-2xl mx-auto">

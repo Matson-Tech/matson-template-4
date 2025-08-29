@@ -23,9 +23,13 @@ export const MoreInfoSection = () => {
         messageOnUpdate(isUpdated, "content");
     };
 
+    if (weddingData.moreInfo.disabled) {
+        return;
+    }
+
     return (
         <WeddingSection
-            id="info"
+            id={"info"}
             className="bg-gradient-to-br from-green-100 to-teal-200"
         >
             <FadeIn>
