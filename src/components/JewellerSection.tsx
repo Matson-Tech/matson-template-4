@@ -6,12 +6,24 @@ import FadeIn from "./animations/FadeIn";
 import { WeddingSection } from "./WeddingSection";
 
 export const JewellerSection = () => {
-    const { weddingData } = useWedding();
-
-    if (weddingData.jeweller.disabled) {
-        return;
+    const { weddingAd } = useWedding();
+    if (!weddingAd || !weddingAd.Ad_section) {
+        return null;
     }
-
+    // Provide default values if weddingAd is null/undefined
+    const safeWeddingAd = {
+        Ad_section: {
+            title: weddingAd.Ad_section.title || 'Our wedding cards',
+            image: weddingAd.Ad_section.image || '/jeweller/ad-1.jpg',
+            description: weddingAd.Ad_section.description || 'Discover our exclusive collection of fine wedding cards.',
+            shopName: weddingAd.Ad_section.shopName || 'Luxury Cards',
+            website: weddingAd.Ad_section.website || 'matson.app',
+            disabled: weddingAd.Ad_section.disabled || false
+        }
+    };
+    if (safeWeddingAd.Ad_section.disabled) {
+        return null;
+    }
     return (
         <WeddingSection
             id={"jeweller"}
@@ -23,31 +35,31 @@ export const JewellerSection = () => {
                         <CardHeader className="text-center bg-gradient-to-r from-yellow-400 to-amber-400 text-white">
                             <CardTitle className="flex items-center justify-center space-x-2 text-2xl md:text-3xl font-bold">
                                 <Gem className="h-8 w-8" />
-                                <span>{weddingData.jeweller.title}</span>
+                                <span>{safeWeddingAd.Ad_section.title}</span>
                             </CardTitle>
                         </CardHeader>
-                        <img src="/jewellery/ad-1.jpg" alt="jewellery" />
+                        <img src={safeWeddingAd.Ad_section.image} alt="jewellery" />
                         <CardContent className="p-8 text-center space-y-6">
                             <p className="text-lg text-gray-700 leading-relaxed">
-                                {weddingData.jeweller.description}
+                                {safeWeddingAd.Ad_section.description}
                             </p>
 
                             <div className="space-y-4">
                                 <h3 className="text-xl font-semibold text-gray-800">
-                                    {weddingData.jeweller.shopName}
+                                    {safeWeddingAd.Ad_section.shopName}
                                 </h3>
                                 <FadeIn delay={200}>
                                     <Button
                                         onClick={() =>
                                             window.open(
-                                                weddingData.jeweller.website,
+                                                safeWeddingAd.Ad_section.website,
                                                 "_blank",
                                             )
                                         }
                                         className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white px-8 py-3 text-lg"
                                     >
                                         <ExternalLink className="h-5 w-5 mr-2" />
-                                        Visit Our Jeweller
+                                        Visit Our Store
                                     </Button>
                                 </FadeIn>
                             </div>
